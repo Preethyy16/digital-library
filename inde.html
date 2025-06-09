@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Employee Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .employee {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .employee:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Search Employee Details</h1>
+        <input type="text" id="searchBox" placeholder="Enter employee name or designation">
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        document.getElementById('searchBox').addEventListener('input', function () {
+            const searchTerm = this.value;
+
+            if (searchTerm.length > 0) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', `search.php?term=${encodeURIComponent(searchTerm)}`, true);
+                xhr.onload = function () {
+                    if (this.status === 200) {
+                        const resultsDiv = document.getElementById('results');
+                        resultsDiv.innerHTML = '';
+
+                        const employees = JSON.parse(this.responseText);
+                        if (employees.length > 0) {
+                            employees.forEach(employee => {
+                                const div = document.createElement('div');
+                                div.className = 'employee';
+                                div.innerHTML = `
+                                    <strong>${employee.name}</strong><br>
+                                    Designation: ${employee.designation}<br>
+                                    Department: ${employee.department}<br>
+                                    Salary: $${employee.salary}
+                                `;
+                                resultsDiv.appendChild(div);
+                            });
+                        } else {
+                            resultsDiv.innerHTML = '<p>No employees found.</p>';
+                        }
+                    }
+                };
+                xhr.send();
+            } else {
+                document.getElementById('results').innerHTML = '';
+            }
+        });
+    </script>
+</body>
+</html>

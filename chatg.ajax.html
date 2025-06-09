@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AJAX Example</title>
+    <script>
+        function loadDoc(url, cFunction) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    cFunction(this); // Call the callback function with the response
+                }
+            };
+            xhttp.open("GET", url, true); // Use "true" for asynchronous
+            xhttp.send();
+        }
+
+        function myFunction1(xhttp) {
+            // Process the response for url1
+            document.getElementById("output1").innerHTML = "Response from URL1: " + xhttp.responseText;
+        }
+
+        function myFunction2(xhttp) {
+            // Process the response for url2
+            document.getElementById("output2").innerHTML = "Response from URL2: " + xhttp.responseText;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Trigger the AJAX calls when the page is loaded
+            loadDoc("https://jsonplaceholder.typicode.com/posts/1", myFunction1);
+            loadDoc("https://jsonplaceholder.typicode.com/posts/2", myFunction2);
+        });
+    </script>
+</head>
+<body>
+    <h1>AJAX Example</h1>
+    <div id="output1">Waiting for URL1 response...</div>
+    <div id="output2">Waiting for URL2 response...</div>
+</body>
+</html>

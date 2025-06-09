@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX Dropdown Example</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        // AJAX function to fetch description based on selected item
+        function fetchDescription() {
+            var itemId = document.getElementById('itemDropdown').value; // Get the selected item ID
+            if (itemId != '') {
+                $.ajax({
+                    url: 'fetch_data.php', // PHP file to fetch data
+                    type: 'GET',
+                    data: { id: itemId }, // Send selected item ID to fetch data
+                    success: function(response) {
+                        document.getElementById('itemDescription').innerHTML = response; // Show description
+                    }
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <h2>Select an Item</h2>
+    <select id="itemDropdown" onchange="fetchDescription()">
+        <option value="">Select an item</option>
+        <?php
+       
+        $conn = mysqli_connect('localhost', 'root', '', 'my_database');
+        if ($conn) {
+            $result = mysqli_query($conn, "SELECT * FROM items");
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "<option value='".$row['id']."'>".$row['name']."</option>";
+            }
+            mysqli_close($conn);
+        }
+        ?>
+    </select>
+
+    <h3>Description:</h3>
+    <div id="itemDescription">Please select an item to view the description.</div>
+
+</body>
+</html>
